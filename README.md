@@ -1,1 +1,1 @@
-# votingpool
+# Voting pool
