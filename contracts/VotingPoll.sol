@@ -5,24 +5,35 @@ contract VotingPoll{
 
     uint private id;
     string public  title;
-    uint8[3] public options;
+    mapping(string=>uint) private  options_list;
     uint  public vote;
-    address public sender;
+    address public owner;
+    address private _factory;
 
-    constructor( string memory _title_f,address _sender, uint _id) {
+      modifier onlyFactory() {
+        require(msg.sender == _factory, "You need to use the factory");
+        _;
+    }
+
+    constructor( string memory _title_f,address _owner, uint _id) {
     id=_id;
     title=_title_f;
-    sender=_sender;
+    owner=_owner;
+    vote=0;
+    _factory= msg.sender;
     }
     
-   
-    function setVote(uint _vote) public{
-        vote=_vote;
+    function getVotingPoll(uint count) public onlyFactory view returns(uint ,string memory ,uint){
+            require(count==id,"No existe");
+            return(id,title,vote);
     }
-    // function getVotingPoll()public view returns( string memory, uint8[3] memory,address,bool){
-    //     return (title,options,_sender,vote);
-    // }
-
-  
+    function setVote(uint _vote,string memory _options) public onlyFactory{
+        vote=_vote;
+        options_list[_options]++;
+    }
+    function getOptionsList(string memory _options)public view returns(uint){
+        return options_list[_options];
+    }
+ 
 
 }

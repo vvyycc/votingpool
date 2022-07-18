@@ -13,7 +13,11 @@ import type {
   Signer,
   utils,
 } from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
@@ -24,33 +28,69 @@ import type {
 
 export interface VotingFactoryInterface extends utils.Interface {
   functions: {
-    "allVotingPoll()": FunctionFragment;
-    "createVotingPoll(string,address)": FunctionFragment;
-    "list_voting_poll(uint256)": FunctionFragment;
+    "MAX_VOTES_PER_VOTER()": FunctionFragment;
+    "createVotingPoll(string,address,string)": FunctionFragment;
+    "getVotingPollF(uint256)": FunctionFragment;
+    "getVotingPollOptions(uint256,string)": FunctionFragment;
+    "vote(uint256,string)": FunctionFragment;
+    "votesAvailable()": FunctionFragment;
+    "votes_by_address(address)": FunctionFragment;
+    "votingPollCount()": FunctionFragment;
+    "votingPolls(uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "allVotingPoll"
+      | "MAX_VOTES_PER_VOTER"
       | "createVotingPoll"
-      | "list_voting_poll"
+      | "getVotingPollF"
+      | "getVotingPollOptions"
+      | "vote"
+      | "votesAvailable"
+      | "votes_by_address"
+      | "votingPollCount"
+      | "votingPolls"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "allVotingPoll",
+    functionFragment: "MAX_VOTES_PER_VOTER",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "createVotingPoll",
-    values: [string, string]
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "list_voting_poll",
+    functionFragment: "getVotingPollF",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getVotingPollOptions",
+    values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "vote",
+    values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "votesAvailable",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "votes_by_address",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "votingPollCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "votingPolls",
     values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "allVotingPoll",
+    functionFragment: "MAX_VOTES_PER_VOTER",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -58,12 +98,49 @@ export interface VotingFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "list_voting_poll",
+    functionFragment: "getVotingPollF",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getVotingPollOptions",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "vote", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "votesAvailable",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "votes_by_address",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "votingPollCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "votingPolls",
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "NewVotingPoll()": EventFragment;
+    "Voted()": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "NewVotingPoll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Voted"): EventFragment;
 }
+
+export interface NewVotingPollEventObject {}
+export type NewVotingPollEvent = TypedEvent<[], NewVotingPollEventObject>;
+
+export type NewVotingPollEventFilter = TypedEventFilter<NewVotingPollEvent>;
+
+export interface VotedEventObject {}
+export type VotedEvent = TypedEvent<[], VotedEventObject>;
+
+export type VotedEventFilter = TypedEventFilter<VotedEvent>;
 
 export interface VotingFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -92,75 +169,209 @@ export interface VotingFactory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    allVotingPoll(overrides?: CallOverrides): Promise<[string[]]>;
+    MAX_VOTES_PER_VOTER(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     createVotingPoll(
       title: string,
       voter: string,
+      options: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    list_voting_poll(
+    getVotingPollF(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, string, BigNumber]>;
+
+    getVotingPollOptions(
+      _votingPollID: BigNumberish,
+      options: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    vote(
+      _votingPollID: BigNumberish,
+      options: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    votesAvailable(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    votes_by_address(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    votingPollCount(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    votingPolls(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
   };
 
-  allVotingPoll(overrides?: CallOverrides): Promise<string[]>;
+  MAX_VOTES_PER_VOTER(overrides?: CallOverrides): Promise<BigNumber>;
 
   createVotingPoll(
     title: string,
     voter: string,
+    options: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  list_voting_poll(
-    arg0: BigNumberish,
+  getVotingPollF(
+    id: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<string>;
+  ): Promise<[BigNumber, string, BigNumber]>;
+
+  getVotingPollOptions(
+    _votingPollID: BigNumberish,
+    options: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  vote(
+    _votingPollID: BigNumberish,
+    options: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  votesAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+
+  votes_by_address(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  votingPollCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+  votingPolls(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    allVotingPoll(overrides?: CallOverrides): Promise<string[]>;
+    MAX_VOTES_PER_VOTER(overrides?: CallOverrides): Promise<BigNumber>;
 
     createVotingPoll(
       title: string,
       voter: string,
+      options: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    list_voting_poll(
-      arg0: BigNumberish,
+    getVotingPollF(
+      id: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<[BigNumber, string, BigNumber]>;
+
+    getVotingPollOptions(
+      _votingPollID: BigNumberish,
+      options: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    vote(
+      _votingPollID: BigNumberish,
+      options: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    votesAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+
+    votes_by_address(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    votingPollCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    votingPolls(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
   };
 
-  filters: {};
+  filters: {
+    "NewVotingPoll()"(): NewVotingPollEventFilter;
+    NewVotingPoll(): NewVotingPollEventFilter;
+
+    "Voted()"(): VotedEventFilter;
+    Voted(): VotedEventFilter;
+  };
 
   estimateGas: {
-    allVotingPoll(overrides?: CallOverrides): Promise<BigNumber>;
+    MAX_VOTES_PER_VOTER(overrides?: CallOverrides): Promise<BigNumber>;
 
     createVotingPoll(
       title: string,
       voter: string,
+      options: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    list_voting_poll(
+    getVotingPollF(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getVotingPollOptions(
+      _votingPollID: BigNumberish,
+      options: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    vote(
+      _votingPollID: BigNumberish,
+      options: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    votesAvailable(overrides?: CallOverrides): Promise<BigNumber>;
+
+    votes_by_address(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    votingPollCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    votingPolls(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    allVotingPoll(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    MAX_VOTES_PER_VOTER(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     createVotingPoll(
       title: string,
       voter: string,
+      options: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    list_voting_poll(
+    getVotingPollF(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getVotingPollOptions(
+      _votingPollID: BigNumberish,
+      options: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    vote(
+      _votingPollID: BigNumberish,
+      options: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    votesAvailable(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    votes_by_address(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    votingPollCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    votingPolls(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

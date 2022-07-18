@@ -7,6 +7,8 @@ import type {
   BigNumberish,
   BytesLike,
   CallOverrides,
+  ContractTransaction,
+  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -22,26 +24,50 @@ import type {
 
 export interface VotingPollInterface extends utils.Interface {
   functions: {
-    "options(uint256)": FunctionFragment;
-    "sender()": FunctionFragment;
+    "getOptionsList(string)": FunctionFragment;
+    "getVotingPoll(uint256)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "setVote(uint256,string)": FunctionFragment;
     "title()": FunctionFragment;
     "vote()": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "options" | "sender" | "title" | "vote"
+    nameOrSignatureOrTopic:
+      | "getOptionsList"
+      | "getVotingPoll"
+      | "owner"
+      | "setVote"
+      | "title"
+      | "vote"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "options",
+    functionFragment: "getOptionsList",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getVotingPoll",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "sender", values?: undefined): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "setVote",
+    values: [BigNumberish, string]
+  ): string;
   encodeFunctionData(functionFragment: "title", values?: undefined): string;
   encodeFunctionData(functionFragment: "vote", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "options", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "sender", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getOptionsList",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getVotingPoll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setVote", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "title", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "vote", data: BytesLike): Result;
 
@@ -75,39 +101,95 @@ export interface VotingPoll extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    options(arg0: BigNumberish, overrides?: CallOverrides): Promise<[number]>;
+    getOptionsList(
+      _options: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
-    sender(overrides?: CallOverrides): Promise<[string]>;
+    getVotingPoll(
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, string, BigNumber]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    setVote(
+      _vote: BigNumberish,
+      _options: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     title(overrides?: CallOverrides): Promise<[string]>;
 
-    vote(overrides?: CallOverrides): Promise<[boolean]>;
+    vote(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
-  options(arg0: BigNumberish, overrides?: CallOverrides): Promise<number>;
+  getOptionsList(
+    _options: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
-  sender(overrides?: CallOverrides): Promise<string>;
+  getVotingPoll(
+    count: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, string, BigNumber]>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  setVote(
+    _vote: BigNumberish,
+    _options: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   title(overrides?: CallOverrides): Promise<string>;
 
-  vote(overrides?: CallOverrides): Promise<boolean>;
+  vote(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
-    options(arg0: BigNumberish, overrides?: CallOverrides): Promise<number>;
+    getOptionsList(
+      _options: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    sender(overrides?: CallOverrides): Promise<string>;
+    getVotingPoll(
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, string, BigNumber]>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    setVote(
+      _vote: BigNumberish,
+      _options: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     title(overrides?: CallOverrides): Promise<string>;
 
-    vote(overrides?: CallOverrides): Promise<boolean>;
+    vote(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {};
 
   estimateGas: {
-    options(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    getOptionsList(
+      _options: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    sender(overrides?: CallOverrides): Promise<BigNumber>;
+    getVotingPoll(
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setVote(
+      _vote: BigNumberish,
+      _options: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     title(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -115,12 +197,23 @@ export interface VotingPoll extends BaseContract {
   };
 
   populateTransaction: {
-    options(
-      arg0: BigNumberish,
+    getOptionsList(
+      _options: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    sender(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getVotingPoll(
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setVote(
+      _vote: BigNumberish,
+      _options: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     title(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

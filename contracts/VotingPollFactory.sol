@@ -10,28 +10,42 @@ pragma solidity ^0.8.0;
     VotingPoll votingPoll;
   
     mapping(uint => VotingPoll) public votingPolls;
+    mapping(uint => uint) private votingCountByVotingPoll;
     mapping(address => uint) public votes_by_address;
     uint public votingPollCount;
+
     constructor(){
         votingPollCount=0;
     }
-  mapping(address => uint) public votes;
-    function createVotingPoll(string memory title,address voter) external {
+    function createVotingPoll(string memory title,address voter, string memory options) external {
         votingPollCount++;
         votingPoll = new VotingPoll(title,voter,votingPollCount);
         votingPolls[votingPollCount]=votingPoll;
+        vote(votingPollCount,options);
+
         emit NewVotingPoll();
 
     }
 
-      function vote(uint _votingPollID) public {
-    require(votes[msg.sender] < MAX_VOTES_PER_VOTER, "Voter has no votes left.");
-    require(_votingPollID > 0 && _votingPollID <= votingPollCount, "Movie ID is out of range.");
-
+      function vote(uint _votingPollID, string memory options) public {
+    require(votes_by_address[msg.sender] < MAX_VOTES_PER_VOTER, "Voter has no votes left.");
+    require(_votingPollID > 0 && _votingPollID <= votingPollCount, "VotingPoll ID is out of range.");
     votes_by_address[msg.sender]++;
-    votingPolls[_votingPollID].setVote(votes_by_address[msg.sender]);
+    votingCountByVotingPoll[_votingPollID]++;
+    votingPolls[_votingPollID].setVote(votingCountByVotingPoll[_votingPollID], options);
 
     emit Voted();
   }
-  
+  function getVotingPollF(uint id) public view returns(uint ,string memory ,uint){
+      require(votingPollCount > 0,"The list is empty, you should create a VotingPoll");
+     return votingPolls[id].getVotingPoll(id);
+  }
+  function votesAvailable() public view returns( uint){
+      return MAX_VOTES_PER_VOTER -votes_by_address[msg.sender];
+  }
+
+  function getVotingPollOptions(uint _votingPollID,string memory options) public view returns(uint){
+       require(_votingPollID > 0 && _votingPollID <= votingPollCount, "VotingPoll ID is out of range.");
+      return votingPolls[_votingPollID].getOptionsList(options);
+  }
 }

@@ -9,6 +9,9 @@ import "@nomiclabs/hardhat-ethers";
 import "solidity-coverage";
 
 dotenv.config();
+const privateKey= process.env.PRIVATE_KEY
+const url= process.env.DEPLOY_KEY_RINKEBY
+
 let deployRinkeby: Array<string>= new  Array<string>();
 process.env.DEPLOY_ACC_RINKEBY!=null? deployRinkeby.push(process.env.DEPLOY_ACC_RINKEBY) : deployRinkeby;
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -32,8 +35,8 @@ const config: HardhatUserConfig = {
     },
    
     rinkeby: {
-      url: process.env.DEPLOY_KEY_RINKEBY,
-      accounts:deployRinkeby,
+      url: url,
+      accounts:[`0x${privateKey}`],
     },
       localhost: {
       accounts:process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],

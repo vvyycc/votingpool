@@ -18,9 +18,7 @@ async function main() {
   // const greeter = await Greeter.deploy("Hello, Hardhat!");
 
   const VF = await ethers.getContractFactory('VotingFactory');
-  const VotingPoll = await ethers.getContractFactory('VotingPoll');
   const vf= await VF.deploy();
-  await VotingPoll.deploy("Prueba","0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199")
    await vf.deployed();
 
   console.log("VotingFactory deployed to:", vf.address);
