@@ -11,6 +11,7 @@ import "solidity-coverage";
 dotenv.config();
 const privateKey= process.env.PRIVATE_KEY
 const url= process.env.DEPLOY_KEY_RINKEBY
+const etherscanKey= process.env.ETHERSCAN_API_KEY;
 
 let deployRinkeby: Array<string>= new  Array<string>();
 process.env.DEPLOY_ACC_RINKEBY!=null? deployRinkeby.push(process.env.DEPLOY_ACC_RINKEBY) : deployRinkeby;
@@ -28,7 +29,12 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // Go to https://hardhat.org/config/ to learn more
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.4",
+  solidity: {
+    version:"0.8.4",
+    settings: {
+      optimizer: {enabled: process.env.DEBUG ? false : true},
+    }
+  },
   networks: {
     hardhat: {
       chainId: 1337,
@@ -43,7 +49,10 @@ const config: HardhatUserConfig = {
       url: "http://127.0.0.1:8545"
     }
   },
-
+  
+  etherscan:{
+    apiKey:etherscanKey
+  },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",

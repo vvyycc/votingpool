@@ -2,5 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as votingPollFactorySol from "./VotingPollFactory.sol";
-export { Greeter__factory } from "./Greeter__factory";
 export { VotingPoll__factory } from "./VotingPoll__factory";

@@ -21,16 +21,16 @@ pragma solidity ^0.8.0;
         votingPollCount++;
         votingPoll = new VotingPoll(title,voter,votingPollCount);
         votingPolls[votingPollCount]=votingPoll;
-        vote(votingPollCount,options);
+        vote(msg.sender,votingPollCount,options);
 
         emit NewVotingPoll();
 
     }
 
-      function vote(uint _votingPollID, string memory options) public {
-    require(votes_by_address[msg.sender] < MAX_VOTES_PER_VOTER, "Voter has no votes left.");
+      function vote(address _sender,uint _votingPollID, string memory options) public {
+    require(votes_by_address[_sender] < MAX_VOTES_PER_VOTER, "Voter has no votes left.");
     require(_votingPollID > 0 && _votingPollID <= votingPollCount, "VotingPoll ID is out of range.");
-    votes_by_address[msg.sender]++;
+    votes_by_address[_sender]++;
     votingCountByVotingPoll[_votingPollID]++;
     votingPolls[_votingPollID].setVote(votingCountByVotingPoll[_votingPollID], options);
 
@@ -41,7 +41,7 @@ pragma solidity ^0.8.0;
      return votingPolls[id].getVotingPoll(id);
   }
   function votesAvailable() public view returns( uint){
-      return MAX_VOTES_PER_VOTER -votes_by_address[msg.sender];
+      return MAX_VOTES_PER_VOTER - votes_by_address[msg.sender];
   }
 
   function getVotingPollOptions(uint _votingPollID,string memory options) public view returns(uint){

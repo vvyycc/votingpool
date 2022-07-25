@@ -3,10 +3,8 @@
 /* eslint-disable */
 import type * as votingPollFactorySol from "./VotingPollFactory.sol";
 export type { votingPollFactorySol };
-export type { Greeter } from "./Greeter";
 export type { VotingPoll } from "./VotingPoll";
 export * as factories from "./factories";
-export { Greeter__factory } from "./factories/Greeter__factory";
 export { VotingPoll__factory } from "./factories/VotingPoll__factory";
 export type { VotingFactory } from "./VotingPollFactory.sol/VotingFactory";
 export { VotingFactory__factory } from "./factories/VotingPollFactory.sol/VotingFactory__factory";

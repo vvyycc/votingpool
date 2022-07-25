@@ -32,7 +32,7 @@ export interface VotingFactoryInterface extends utils.Interface {
     "createVotingPoll(string,address,string)": FunctionFragment;
     "getVotingPollF(uint256)": FunctionFragment;
     "getVotingPollOptions(uint256,string)": FunctionFragment;
-    "vote(uint256,string)": FunctionFragment;
+    "vote(address,uint256,string)": FunctionFragment;
     "votesAvailable()": FunctionFragment;
     "votes_by_address(address)": FunctionFragment;
     "votingPollCount()": FunctionFragment;
@@ -70,7 +70,7 @@ export interface VotingFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "vote",
-    values: [BigNumberish, string]
+    values: [string, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "votesAvailable",
@@ -190,6 +190,7 @@ export interface VotingFactory extends BaseContract {
     ): Promise<[BigNumber]>;
 
     vote(
+      _sender: string,
       _votingPollID: BigNumberish,
       options: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -231,6 +232,7 @@ export interface VotingFactory extends BaseContract {
   ): Promise<BigNumber>;
 
   vote(
+    _sender: string,
     _votingPollID: BigNumberish,
     options: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -266,6 +268,7 @@ export interface VotingFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     vote(
+      _sender: string,
       _votingPollID: BigNumberish,
       options: string,
       overrides?: CallOverrides
@@ -313,6 +316,7 @@ export interface VotingFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     vote(
+      _sender: string,
       _votingPollID: BigNumberish,
       options: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -357,6 +361,7 @@ export interface VotingFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     vote(
+      _sender: string,
       _votingPollID: BigNumberish,
       options: string,
       overrides?: Overrides & { from?: string | Promise<string> }
