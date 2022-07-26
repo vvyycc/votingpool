@@ -18,6 +18,7 @@ beforeEach(async () => {
   ownerAddress=  owner.address;
   voterAddress = voter.address;
 });
+
 describe("Core", function () {
 
   it("Creating a votingpoll", async () => {
@@ -25,15 +26,8 @@ describe("Core", function () {
    
     
      receptTx = await contract.createVotingPoll("Hola",ownerAddress,'Good');
-     countVote++;
      
-    console.log(receptTx);
     
-
-
- 
-    console.log("\n")
-
 
 
   })
@@ -46,22 +40,13 @@ describe("Core", function () {
     await expect(contract.createVotingPoll("Hola",ownerAddress,'Good')).to.be.revertedWith(
       "Voter has no votes left."
     );
-    
-
-   
-
-
-
-   console.log("\n")
-
 
 
  })
   it("Vote a votingPoll that it was created", async () => {
     receptTx = await contract.createVotingPoll("Hola",ownerAddress,'Good');
     await contract.vote(voterAddress,1,'Good')
-    const count = await contract.votingPollCount();
-    console.log(count)
+
   })
   it("Voter has no votes left", async () => {
     receptTx = await contract.createVotingPoll("Hola",ownerAddress,'Good');
@@ -69,8 +54,13 @@ describe("Core", function () {
     await expect( contract.vote(voterAddress,1,'Good')).to.be.revertedWith(
       "Voter has no votes left.");
     
-    const count = await contract.votingPollCount();
-    console.log(count)
+  })
+
+  it("VotingPoll doesn´t exist", async () => {
+    await expect( contract.vote(voterAddress,1,'Good')).to.be.revertedWith(
+      "VotingPoll ID is out of range");
+  
   })
 });
+
 });
